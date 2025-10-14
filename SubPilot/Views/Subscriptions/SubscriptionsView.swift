@@ -66,7 +66,7 @@ struct SubscriptionsView: View {
                         monthlyPence: viewModel.monthlyTotalPence(subs: filteredSubs),
                         annualPence: viewModel.annualTotalPence(subs: filteredSubs),
                         averageMonthlyPence: viewModel.averageMonthlyPence(subs: filteredSubs),
-                        nextSubscription: viewModel.nextIncoming(subs: filteredSubs),
+                        nextSub: viewModel.nextIncoming(subs: filteredSubs),
                         currency: selectedCurrency
                     )
                     .listRowInsets(EdgeInsets())
@@ -92,17 +92,17 @@ struct SubscriptionsView: View {
         .padding()
     }
     
-    // MARK: - Filtering
     private var filteredSubs: [Subscription] {
-        let query = search.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !query.isEmpty else { return subs }
-        return subs.filter {
-            $0.name.localizedCaseInsensitiveContains(query)
-            || ($0.category ?? "").localizedCaseInsensitiveContains(query)
-        }
+        viewModel.filter(subs: subs, query: search)
     }
 }
 
-#Preview {
+#Preview("Empty") {
     SubscriptionsView()
+        .modelContainer(PreviewSwiftData.container(seed: false))
+}
+
+#Preview("Seeded") {
+    SubscriptionsView()
+        .modelContainer(PreviewSwiftData.container(seed: true))
 }

@@ -4,7 +4,7 @@ struct SummaryHeader: View {
     let monthlyPence: Int
     let annualPence: Int
     let averageMonthlyPence: Int
-    let nextSubscription: Subscription?
+    let nextSub: Subscription?
     let currency: Currency
 
     var body: some View {
@@ -12,8 +12,8 @@ struct SummaryHeader: View {
             monthlyTotal
             annualAverage
 
-            if let nextSubscription {
-                nextPaymentFooter(subscription: nextSubscription)
+            if let nextSub {
+                nextPaymentFooter(sub: nextSub)
             }
             
             Divider()
@@ -65,7 +65,7 @@ struct SummaryHeader: View {
     }
     
     @ViewBuilder
-    private func nextPaymentFooter(subscription: Subscription) -> some View {
+    private func nextPaymentFooter(sub: Subscription) -> some View {
         Divider()
             .padding(.vertical, 6)
         
@@ -76,7 +76,7 @@ struct SummaryHeader: View {
                 Text("Next payment")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Text("\(subscription.name) • \(subscription.nextPaymentDate.formatted(date: .abbreviated, time: .omitted))")
+                Text("\(sub.name) • \(sub.nextPaymentDate.formatted(date: .abbreviated, time: .omitted))")
                     .font(.subheadline)
             }
         }
@@ -88,12 +88,7 @@ struct SummaryHeader: View {
         monthlyPence: 2000,
         annualPence: 200000,
         averageMonthlyPence: 2000,
-        nextSubscription: .init(
-            name: "Netflix",
-            pricePence: 2000,
-            billingCycle: .monthly,
-            nextPaymentDate: .init(timeInterval: 24 * 60 * 60, since: Date())
-        ),
+        nextSub: makeSampleSubscriptions().first,
         currency: .gbp
     )
 }

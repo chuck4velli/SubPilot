@@ -4,6 +4,15 @@ import Observation
 @MainActor
 @Observable
 final class SubscriptionsViewModel {
+    // MARK: - Filtering
+    func filter(subs: [Subscription], query: String) -> [Subscription] {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return subs }
+        return subs.filter {
+            $0.name.localizedCaseInsensitiveContains(trimmed)
+            || ($0.category ?? "").localizedCaseInsensitiveContains(trimmed)
+        }
+    }
     
     // MARK: - Totals
     func monthlyTotalPence(subs: [Subscription]) -> Int {
