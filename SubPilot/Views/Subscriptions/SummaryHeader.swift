@@ -1,0 +1,99 @@
+import SwiftUI
+
+struct SummaryHeader: View {
+    let monthlyPence: Int
+    let annualPence: Int
+    let averageMonthlyPence: Int
+    let nextSubscription: Subscription?
+    let currency: Currency
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            monthlyTotal
+            annualAverage
+
+            if let nextSubscription {
+                nextPaymentFooter(subscription: nextSubscription)
+            }
+            
+            Divider()
+                .padding(.top, 6)
+        }
+        .padding(.horizontal)
+        .padding(.top, 8)
+    }
+    
+    @ViewBuilder
+    private var monthlyTotal: some View {
+        Text("Monthly Total")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+        
+        Text(currency.format(pence: monthlyPence))
+            .font(
+                .system(
+                    size: 38,
+                    weight: .bold,
+                    design: .rounded
+                )
+            )
+            .padding(.bottom, 2)
+    }
+    
+    @ViewBuilder
+    private var annualAverage: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Annual")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(currency.format(pence: annualPence))
+                    .font(.headline)
+            }
+            
+            Spacer(minLength: 20)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Avg / Sub (mo)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(currency.format(pence: averageMonthlyPence))
+                    .font(.headline)
+            }
+        }
+        .padding(.top, 4)
+    }
+    
+    @ViewBuilder
+    private func nextPaymentFooter(subscription: Subscription) -> some View {
+        Divider()
+            .padding(.vertical, 6)
+        
+        HStack(spacing: 8) {
+            Image(systemName: "calendar.badge.clock")
+                .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Next payment")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text("\(subscription.name) • \(subscription.nextPaymentDate.formatted(date: .abbreviated, time: .omitted))")
+                    .font(.subheadline)
+            }
+        }
+    }
+}
+
+#Preview {
+    SummaryHeader(
+        monthlyPence: 2000,
+        annualPence: 200000,
+        averageMonthlyPence: 2000,
+        nextSubscription: .init(
+            name: "Netflix",
+            pricePence: 2000,
+            billingCycle: .monthly,
+            nextPaymentDate: .init(timeInterval: 24 * 60 * 60, since: Date())
+        ),
+        currency: .gbp
+    )
+}
