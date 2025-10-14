@@ -59,8 +59,16 @@ struct SubscriptionsView: View {
             emptyView()
         } else {
             List {
-                ForEach(filteredSubs) { sub in
-                    
+                Section {
+                    SummaryHeader(
+                        monthlyPence: viewModel.monthlyTotalPence(subs: filteredSubs),
+                        annualPence: viewModel.annualTotalPence(subs: filteredSubs),
+                        averageMonthlyPence: viewModel.averageMonthlyPence(subs: filteredSubs),
+                        nextSubscription: viewModel.nextIncoming(subs: filteredSubs),
+                        currency: selectedCurrency
+                    )
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
                 }
             }
         }
