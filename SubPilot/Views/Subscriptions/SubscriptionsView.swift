@@ -3,24 +3,24 @@ import SwiftData
 
 struct SubscriptionsView: View {
     @AppStorage("selectedCurrencyCode") var selectedCurrencyCode = Currency.gbp.rawValue
+    
     @Environment(\.modelContext) private var context
+    
     @Query(sort: \Subscription.nextPaymentDate, order: .forward)
     private var subs: [Subscription]
+    
+    @State private var viewModel = SubscriptionsViewModel()
+    @State private var search = ""
     
     private var selectedCurrency: Currency {
         Currency(rawValue: selectedCurrencyCode) ?? .gbp
     }
-    
     private var selectedCurrencyBinding: Binding<Currency> {
         Binding(
             get: { Currency(rawValue: selectedCurrencyCode) ?? .gbp },
             set: { selectedCurrencyCode = $0.rawValue }
         )
     }
-    
-    @State private var viewModel = SubscriptionsViewModel()
-    @State private var showingAdd = false
-    @State private var search = ""
     
     var body: some View {
         NavigationStack {
@@ -35,7 +35,9 @@ struct SubscriptionsView: View {
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
-            Button { showingAdd = true } label: {
+            Button {
+                // TODO: Add subscription
+            } label: {
                 Image(systemName: "plus.circle.fill")
             }
         }
@@ -82,8 +84,10 @@ struct SubscriptionsView: View {
                 systemImage: "creditcard.and.123.circle",
                 description: Text("Track Netflix, Spotify, iCloud and more")
             )
-            Button("Add Subscription") { showingAdd = true }
-                .buttonStyle(.borderedProminent)
+            Button("Add Subscription") {
+                // TODO: Add subcription
+            }
+            .buttonStyle(.borderedProminent)
         }
         .padding()
     }
