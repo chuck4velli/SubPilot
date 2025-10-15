@@ -69,10 +69,14 @@ struct SubscriptionsView: View {
                         nextSub: viewModel.nextIncoming(subs: filteredSubs),
                         currency: selectedCurrency
                     )
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
+                    
+                    CategorySpendChart(
+                        subs: filteredSubs,
+                        currency: selectedCurrency
+                    )
                 }
             }
+            .listStyle(.insetGrouped)
         }
     }
     
