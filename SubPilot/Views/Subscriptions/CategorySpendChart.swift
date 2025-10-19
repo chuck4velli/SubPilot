@@ -11,11 +11,17 @@ struct CategorySpendChart: View {
             ($0.category?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false) ? $0.category! : "Other"
         }
         let totals = grouped.map { category, items in
-            CategorySpend(category: category, totalPence: items.reduce(0) { $0 + $1.monthlyEquivalentPence })
+            let colorHex = items.first?.colorHex ?? "#000000"
+            return CategorySpend(
+                colorHex: colorHex,
+                category: category,
+                totalPence: items.reduce(0) { $0 + $1.monthlyEquivalentPence
+                }
+            )
         }
         return totals.sorted { $0.totalPence > $1.totalPence }.prefix(topNumber).map { $0 }
     }
-    
+        
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -37,6 +43,7 @@ struct CategorySpendChart: View {
                         x: .value("Amount", Double(item.totalPence) / 100.0),
                         y: .value("Category", item.category)
                     )
+                    .foregroundStyle(Color(hex: item.colorHex) ?? .clear)
                     .annotation(position: .trailing, alignment: .leading) {
                         Text(currency.format(pence: item.totalPence))
                             .font(.caption2)
@@ -53,8 +60,7 @@ struct CategorySpendChart: View {
                 .chartYAxis {
                     AxisMarks(preset: .aligned, position: .leading)
                 }
-                .frame(height: max(140, CGFloat(data.count) * 28))
-                
+                .frame(height: max(140, CGFloat(data.count) * 28))                
             }
             Divider()
                 .padding(.top, 2)
