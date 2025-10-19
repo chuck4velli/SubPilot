@@ -15,9 +15,6 @@ struct SummaryHeader: View {
             if let nextSub {
                 nextPaymentFooter(sub: nextSub)
             }
-            
-            Divider()
-                .padding(.top, 6)
         }
         .padding(.horizontal)
         .padding(.top, 8)
