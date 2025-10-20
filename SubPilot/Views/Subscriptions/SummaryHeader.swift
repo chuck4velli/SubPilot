@@ -63,9 +63,6 @@ struct SummaryHeader: View {
     
     @ViewBuilder
     private func nextPaymentFooter(sub: Subscription) -> some View {
-        Divider()
-            .padding(.vertical, 6)
-        
         HStack(spacing: 8) {
             Image(systemName: "calendar.badge.clock")
                 .foregroundStyle(.secondary)
