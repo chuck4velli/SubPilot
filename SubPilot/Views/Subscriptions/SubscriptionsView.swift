@@ -10,6 +10,7 @@ struct SubscriptionsView: View {
 	private var subs: [Subscription]
 	
 	@State private var viewModel = SubscriptionsViewModel()
+	@State private var showingAdd = false
 	@State private var search = ""
 	
 	private var selectedCurrency: Currency {
@@ -29,6 +30,16 @@ struct SubscriptionsView: View {
 				.toolbar {
 					toolbarContent
 				}
+				.sheet(isPresented: $showingAdd) {
+					// TODO: SMS-15 Add/Edit UI
+				}
+				.navigationDestination(for: UUID.self) { id in
+					if let sub = subs.first(where: { $0.id == id }) {
+						Text(sub.name)
+					} else {
+						Text("Not Found")
+					}
+				}
 		}
 	}
 	
@@ -36,7 +47,7 @@ struct SubscriptionsView: View {
 	private var toolbarContent: some ToolbarContent {
 		ToolbarItem(placement: .topBarTrailing) {
 			Button {
-				// TODO: Add subscription
+				showingAdd = true
 			} label: {
 				Image(systemName: "plus.circle.fill")
 			}
@@ -71,22 +82,24 @@ struct SubscriptionsView: View {
 					)
 					
 					ForEach(filteredSubs) { sub in
-						SubscriptionRow(sub: sub, currency: selectedCurrency)
-							.swipeActions {
-								if #available(iOS 26.0, *) {
-									Button(role: .destructive) {
-										context.delete(sub)
-										try? context.save()
-									} label: {
-										Label("Delete", systemImage: "trash")
-									}
-								} else {
-									Button("Delete", role: .destructive) {
-										context.delete(sub)
-										try? context.save()
+						NavigationLink(value: sub.id) {
+							SubscriptionRow(sub: sub, currency: selectedCurrency)
+								.swipeActions {
+									if #available(iOS 26.0, *) {
+										Button(role: .destructive) {
+											context.delete(sub)
+											try? context.save()
+										} label: {
+											Label("Delete", systemImage: "trash")
+										}
+									} else {
+										Button("Delete", role: .destructive) {
+											context.delete(sub)
+											try? context.save()
+										}
 									}
 								}
-							}
+						}
 					}
 					
 					CategorySpendChart(
@@ -108,7 +121,7 @@ struct SubscriptionsView: View {
 				description: Text("Track Netflix, Spotify, iCloud and more")
 			)
 			Button("Add Subscription") {
-				// TODO: Add subcription
+				showingAdd = true
 			}
 			.buttonStyle(.borderedProminent)
 		}
