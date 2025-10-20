@@ -70,6 +70,10 @@ struct SubscriptionsView: View {
                         currency: selectedCurrency
                     )
                     
+                    ForEach(filteredSubs) { sub in
+                        SubscriptionRow(sub: sub, currency: selectedCurrency)
+                    }
+                    
                     CategorySpendChart(
                         subs: filteredSubs,
                         currency: selectedCurrency
