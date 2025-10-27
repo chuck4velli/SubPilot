@@ -15,4 +15,19 @@ extension Color {
         
         self = Color(red: red, green: green, blue: blue)
     }
+
+    /// Returns "#RRGGBB" (no alpha). Uses sRGB.
+    func toHexRGB() -> String? {
+        #if canImport(UIKit)
+        let ui = UIColor(self)
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 1
+        guard ui.getRed(&r, green: &g, blue: &b, alpha: &a) else { return nil }
+        let R = Int(round(r * 255))
+        let G = Int(round(g * 255))
+        let B = Int(round(b * 255))
+        return String(format: "#%02X%02X%02X", R, G, B)
+        #else
+        return nil
+        #endif
+    }
 }
