@@ -44,7 +44,9 @@ struct SubscriptionsView: View {
                             onPersist: { newSub in
                                 context.insert( newSub); try? context.save()
                             },
-                            onSaved: { _ in }
+                            onSaved: { sub in
+                                viewModel.scheduleReminder(for: sub)
+                            }
                         )
                     }
                     .navigationTransition(.zoom(sourceID: "plus", in: addEditSheet))
@@ -59,12 +61,15 @@ struct SubscriptionsView: View {
                                 try? context.save()
                             },
                             onSaved: { updated in
-
+                                viewModel.scheduleReminder(for: updated)
                             }
                         )
                     } else {
                         Text("Not Found")
                     }
+                }
+                .task {
+                    viewModel.requestNotificationPermission()
                 }
         }
     }
@@ -122,6 +127,7 @@ struct SubscriptionsView: View {
                                         Button(role: .destructive) {
                                             context.delete(sub)
                                             try? context.save()
+                                            viewModel.cancelReminder(for: sub)
                                         } label: {
                                             Label("Delete", systemImage: "trash")
                                         }
@@ -129,6 +135,7 @@ struct SubscriptionsView: View {
                                         Button("Delete", role: .destructive) {
                                             context.delete(sub)
                                             try? context.save()
+                                            viewModel.cancelReminder(for: sub)
                                         }
                                     }
                                 }
