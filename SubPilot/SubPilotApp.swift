@@ -5,7 +5,7 @@ import SwiftData
 struct SubPilotApp: App {
     var body: some Scene {
         WindowGroup {
-            EmptyView()
+            SubscriptionsView()
         }
         // Local-only persistence
         .modelContainer(for: [Subscription.self])
