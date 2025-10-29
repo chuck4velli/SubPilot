@@ -32,6 +32,10 @@ struct SubscriptionsView: View {
                 .toolbar {
                     toolbarContent
                 }
+                .searchable(
+                    text: $search,
+                    prompt: "Search name or category"
+                )
                 .sheet(isPresented: $showingAdd) {
                     NavigationStack {
                         AddEditView(
@@ -97,7 +101,7 @@ struct SubscriptionsView: View {
     
     @ViewBuilder
     private func content() -> some View {
-        if filteredSubs.isEmpty {
+        if filteredSubs.isEmpty && search.isEmpty {
             emptyView()
         } else {
             List {
