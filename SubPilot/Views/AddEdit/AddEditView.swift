@@ -18,24 +18,27 @@ struct AddEditView: View {
     @State private var notes = ""
     @State private var hasCustomColor = false
     @State private var selectedColor: Color = .accentColor
-    
+
     @FocusState private var focusedField: Field?
     enum Field {
         case name, price, category, notes, color
     }
     
     init(
+        showDismiss: Bool = true,
         mode: EditMode,
         currency: Currency,
         onPersist: @escaping (Subscription) -> Void,
         onSaved: @escaping (Subscription) -> Void
     ) {
+        self.showDismiss = showDismiss
         self.mode = mode
         self.currency = currency
         self.onPersist = onPersist
         self.onSaved = onSaved
     }
-    
+
+    let showDismiss: Bool
     let mode: EditMode
     let currency: Currency
     /// Persist changes (insert on add, save on edit) — caller decides how.
@@ -102,17 +105,20 @@ struct AddEditView: View {
         }
         .navigationTitle(title)
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel", systemImage: "xmark") {
-                    dismiss()
+            if showDismiss {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", systemImage: "xmark") {
+                        dismiss()
+                    }
                 }
             }
             ToolbarItem(placement: .primaryAction) {
-                Button("Save") {
-                    
-                }
-                .buttonStyle(.borderedProminent)
+                Button("Save", action: save)
+                    .buttonStyle(.borderedProminent)
             }
+        }
+        .onTapGesture {
+            focusedField = nil
         }
         .onAppear(perform: loadIfEditing)
     }

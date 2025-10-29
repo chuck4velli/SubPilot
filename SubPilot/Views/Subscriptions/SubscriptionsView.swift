@@ -37,7 +37,9 @@ struct SubscriptionsView: View {
                         AddEditView(
                             mode: .add,
                             currency: .gbp,
-                            onPersist: { _ in },
+                            onPersist: { newSub in
+                                context.insert( newSub); try? context.save()
+                            },
                             onSaved: { _ in }
                         )
                     }
@@ -45,7 +47,17 @@ struct SubscriptionsView: View {
                 }
                 .navigationDestination(for: UUID.self) { id in
                     if let sub = subs.first(where: { $0.id == id }) {
-                        Text(sub.name)
+                        AddEditView(
+                            showDismiss: false,
+                            mode: .edit(sub),
+                            currency: selectedCurrency,
+                            onPersist: { _ in
+                                try? context.save()
+                            },
+                            onSaved: { updated in
+
+                            }
+                        )
                     } else {
                         Text("Not Found")
                     }
@@ -134,7 +146,7 @@ struct SubscriptionsView: View {
         VStack(spacing: 12) {
             ContentUnavailableView(
                 "No Subscriptions Yet",
-                systemImage: "creditcard.and.123.circle",
+                systemImage: "creditcard.and.numbers",
                 description: Text("Track Netflix, Spotify, iCloud and more")
             )
             Button("Add Subscription") {
